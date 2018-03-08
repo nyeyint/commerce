@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Components\Payment\PaymentObject\:CLASS_NAMESPACE:;
+
+use App\Components\Payment\PaymentObject\BasePaymentGateway;
+
+class :CLASS_NAME: extends BasePaymentGateway {
+
+	public function __construct() {
+			$this->http = new Client();
+	}
+
+	/**
+	 * Handling Payment Object.
+	 *
+	 * @return mixed
+	 */
+
+	public function handle() {
+
+	}
+
+	/**
+	 * Handle Payment Gateway Response.
+	 *
+	 * @param $params mixed|string|array
+	 */
+
+	public function response($params) {
+
+	}
+
+	/**
+	 * Handle Payment Gateway Notification.
+	 *
+	 * @param $params mixed|string|array
+	 */
+
+	public function notify($params) {
+
+	}
+
+	/**
+	 * Handle Payment Gateway Review.
+	 *
+	 * @param $params mixed|string|array
+	 */
+
+	public function review($params) {
+
+	}
+
+	/**
+	 * Handle Payment Gateway Failed Payment.
+	 *
+	 * @param $params mixed|string|array
+	 */
+
+	public function failed($params) {
+
+	}
+
+}
