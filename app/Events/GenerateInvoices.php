@@ -16,7 +16,9 @@ class GenerateInvoices
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order, $user, $path;
+    public $order;
+    public $user;
+    public $path;
 
     /**
      * Create a new event instance.

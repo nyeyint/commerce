@@ -2,58 +2,61 @@
 
 namespace App\Components\Email\Helpers;
 
-class ButtonActivateAccountHelper {
+class ButtonActivateAccountHelper
+{
 
-	/**
-	 * The helper key
-	 *
-	 * @return string
-	 */
-	public $helper;
+    /**
+     * The helper key
+     *
+     * @return string
+     */
+    public $helper;
 
-	/**
-	 * Email template Object
-	 *
-	 * @return string
-	 */
-	public $template;
+    /**
+     * Email template Object
+     *
+     * @return string
+     */
+    public $template;
 
-	/**
-	 * The data object
-	 *
-	 * @return array
-	 */
-	public $data;
+    /**
+     * The data object
+     *
+     * @return array
+     */
+    public $data;
 
-	/**
-	 * The parsed template
-	 *
-	 * @return string
-	 */
-	public $parsed;
+    /**
+     * The parsed template
+     *
+     * @return string
+     */
+    public $parsed;
 
-	public function __construct($helper, $template, $data) {
-		$this->helper = $helper;
-		$this->template = $template;
-		$this->data = $data;
+    public function __construct($helper, $template, $data)
+    {
+        $this->helper = $helper;
+        $this->template = $template;
+        $this->data = $data;
 
-		return $this->parse();
-	}
+        return $this->parse();
+    }
 
-	protected function parse() {
-		$string = $this->template;
+    protected function parse()
+    {
+        $string = $this->template;
 
-		if($this->data['user'] == null) {
-			\Log::info('user not login, from: ButtonActivateAccountHelper');
-			return new RemoveHelper($this->helper['helper'], $this->template, $this->data);
-		}
+        if ($this->data['user'] == null) {
+            \Log::info('user not login, from: ButtonActivateAccountHelper');
+            return new RemoveHelper($this->helper['helper'], $this->template, $this->data);
+        }
 
-		if($this->data['user']->verified) {
-			\Log::info('user not verified, from: ButtonActivateAccountHelper');
-			return new RemoveHelper($this->helper['helper'], $this->template, $this->data);
-		}
+        if ($this->data['user']->verified) {
+            \Log::info('user not verified, from: ButtonActivateAccountHelper');
+            return new RemoveHelper($this->helper['helper'], $this->template, $this->data);
+        }
 
-		$button = '
+        $button = '
 			<a href="' . url('/verify/' . $this->data["user"]->email_token) . '" style="font-family: Avenir,Helvetica,sans-serif;
 		    box-sizing: border-box;
 		    border-radius: 3px;
@@ -67,13 +70,13 @@ class ButtonActivateAccountHelper {
 		    border-left: 18px solid #3097d1;">Activate</a>
 		';
 
-		$this->parsed = str_replace($this->helper['helper'], $button, $string);
+        $this->parsed = str_replace($this->helper['helper'], $button, $string);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function result() {
-		return $this->parsed;
-	}
-
+    public function result()
+    {
+        return $this->parsed;
+    }
 }

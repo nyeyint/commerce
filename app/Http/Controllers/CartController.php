@@ -9,24 +9,27 @@ use App\Address;
 
 class CartController extends Controller
 {
-
-    public function add(Request $request) {
-    	$id = $request->id;
+    public function add(Request $request)
+    {
+        $id = $request->id;
     }
 
-    public function delete(Request $request) {
-    	$id = $request->id;
+    public function delete(Request $request)
+    {
+        $id = $request->id;
 
-    	Cart::remove($id);
-    	return $this->back('success', 'Item Successfully Removed');
+        Cart::remove($id);
+        return $this->back('success', 'Item Successfully Removed');
     }
 
-    public function showAddressForm() {
+    public function showAddressForm()
+    {
         return view('checkout.addressForm');
     }
 
 
-    public function postAddress(Request $request) {
+    public function postAddress(Request $request)
+    {
         try {
             $addressId = decrypt($request->address);
         } catch (\Exception $e) {
@@ -35,12 +38,12 @@ class CartController extends Controller
         }
 
         $address = Address::where('id', $addressId)->first();
-        if(!$address) {
+        if (!$address) {
             error('Whoops! Something went wrong!');
             return redirect()->back();
         }
 
-        if($address->user_id != user()->id) {
+        if ($address->user_id != user()->id) {
             error('Whoops! Something went wrong!');
             return redirect()->back();
         }
@@ -50,48 +53,52 @@ class CartController extends Controller
         return redirect()->route('cart.showCourierForm');
     }
 
-    public function showCourierForm() {
+    public function showCourierForm()
+    {
         return (session()->has('shipping_address'))
             ? view('checkout.courierForm')
             : redirect()->back();
     }
 
-    public function postCourier(Request $request) {
+    public function postCourier(Request $request)
+    {
         $courierObject = json_decode(urldecode($request->shipping_method));
         session(['shipping_method' => $courierObject]);
 
         return redirect()->route('cart.showCouponForm');
-
     }
 
-    public function showCouponForm() {
+    public function showCouponForm()
+    {
         return (session()->has('shipping_method'))
             ? view('checkout.couponForm')
             : redirect()->back();
     }
 
-    public function postCoupon(Request $request) {
+    public function postCoupon(Request $request)
+    {
         dd($request->all());
         return redirect()->route('cart.showPaymentForm');
     }
 
-    public function showPaymentForm(Request $request) {
-
+    public function showPaymentForm(Request $request)
+    {
         $address  = session('shipping_address');
         $courier  = session('shipping_method');
 
-        if($courier == null) {
+        if ($courier == null) {
             return redirect()->route('cart.showCourierForm');
         }
 
-        if($address == null) {
+        if ($address == null) {
             return redirect()->route('cart.index');
         }
 
         return view('checkout.paymentForm');
     }
 
-    public function postPayment(Request $request) {
+    public function postPayment(Request $request)
+    {
         try {
             $pg = decrypt($request->payment_method);
         } catch (\Exception $e) {
@@ -102,7 +109,8 @@ class CartController extends Controller
         return redirect(route('payment.proccess', encrypt(str_random(10))));
     }
 
-    protected function back($status, $message) {
-    	return redirect()->back()->with($status, $message);
+    protected function back($status, $message)
+    {
+        return redirect()->back()->with($status, $message);
     }
 }

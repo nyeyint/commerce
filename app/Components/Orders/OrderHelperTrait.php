@@ -15,7 +15,8 @@ use App\Events\GenerateInvoices;
 use App\Exceptions\OrderNotFoundException;
 use App\Exceptions\InvalidOrderStatusException;
 
-trait OrderHelper {
+trait OrderHelper
+{
 
    /**
     * Check General Order requirements, like shipping address, method etc.
@@ -23,20 +24,21 @@ trait OrderHelper {
     * @return bool
     */
 
-    protected function checkAllowance() {
-        if(!session()->has('shipping_method')) {
+    protected function checkAllowance()
+    {
+        if (!session()->has('shipping_method')) {
             throw new Exception("Unknown Shipping Method", 500);
         }
 
-        if(!session()->has('payment_method')) {
+        if (!session()->has('payment_method')) {
             throw new Exception("Unknown Payment Method", 500);
         }
 
-        if(!session()->has('order_id')) {
+        if (!session()->has('order_id')) {
             throw new Exception("Unknown Order ID", 500);
         }
 
-        if(!session()->has('shipping_address')) {
+        if (!session()->has('shipping_address')) {
             throw new Exception("Unknown Shipping address", 500);
         }
 
@@ -50,16 +52,18 @@ trait OrderHelper {
      * @return App\Order instance.
      */
 
-    public function getOrderByOrderId($orderId) {
+    public function getOrderByOrderId($orderId)
+    {
         $order = Order::where('order_id', $orderId);
-        if(!$order->first()) {
+        if (!$order->first()) {
             throw new OrderNotFoundException($orderId);
         }
 
         return $order->first();
     }
 
-    public function getUserByOrder(Order $order) {
+    public function getUserByOrder(Order $order)
+    {
         return user($order->user_id);
     }
 
@@ -69,12 +73,13 @@ trait OrderHelper {
      * @return void
      */
 
-    protected function sendStatusEmail($orderId, $status) {
+    protected function sendStatusEmail($orderId, $status)
+    {
         $ignore = [
           'shipped', 'unknown', 'payment confirmed'
         ];
 
-        if(in_array($status, $ignore)) {
+        if (in_array($status, $ignore)) {
             return;
         }
 
@@ -96,12 +101,13 @@ trait OrderHelper {
      * @return  bool
      */
 
-    public function updateStatus($orderId, $status) {
+    public function updateStatus($orderId, $status)
+    {
         $allowed = [
           'unpaid', 'paid', 'shipped', 'waiting shipment', 'waiting confirmation', 'payment confirmed', 'unknown', 'proccessing payment', 'canceled'
         ];
 
-        if(!in_array($status, $allowed)) {
+        if (!in_array($status, $allowed)) {
             throw new InvalidOrderStatusException($status);
         }
 
@@ -111,7 +117,6 @@ trait OrderHelper {
 
         // Send status email.
         $this->sendStatusEmail($orderId, $status);
-
     }
 
     /**
@@ -120,16 +125,17 @@ trait OrderHelper {
      * @return void
      */
 
-    protected function sendStatusAction(Order $order, $status, $attachment = null) {
-      $allowed = [
+    protected function sendStatusAction(Order $order, $status, $attachment = null)
+    {
+        $allowed = [
         'paid', 'shipped', 'payment confirmed', 'unknown'
       ];
 
-      if(in_array($status, $allowed)) {
-          throw new InvalidOrderStatusException($status);
-      }
+        if (in_array($status, $allowed)) {
+            throw new InvalidOrderStatusException($status);
+        }
 
-      switch ($status) {
+        switch ($status) {
         case 'paid':
             event('order.paid', $order);
             $this->sendOrderStatusEmail($order, $status, $attachment);
@@ -140,16 +146,16 @@ trait OrderHelper {
             $this->sendOrderStatusEmail($order, $status, $attachment);
           break;
 
-        case 'payment confirmed' :
+        case 'payment confirmed':
             event('order.payment_confirmed', $order);
             $this->sendOrderStatusEmail($order, snake_case($status), $attachment);
+            // no break
         default:
             return;
           break;
       }
 
-      return;
-
+        return;
     }
 
     /**
@@ -159,7 +165,8 @@ trait OrderHelper {
      * @return void
      */
 
-    protected function sendOrderStatusEmail(Order $order, $status, $attachment = null) {
+    protected function sendOrderStatusEmail(Order $order, $status, $attachment = null)
+    {
         $user = $this->getUserByOrder($order);
         $template = email_template('order.status.' . $status);
         $data = [
@@ -178,7 +185,8 @@ trait OrderHelper {
      * @return string
      */
 
-    protected function makeInvoice(Order $order, User $user) {
+    protected function makeInvoice(Order $order, User $user)
+    {
         $uuid = Uuid::generate();
         $filePath = public_path('/invoices/' . $uuid . '.pdf');
         $urlPath  = url('/invoices?trx_id=' . encrypt($uuid));
@@ -196,22 +204,24 @@ trait OrderHelper {
      * @return void
      */
 
-     public function setOrderId() {
+    public function setOrderId()
+    {
         $orderId = "INV-" . Carbon::now()->format('Ymd') .
                       "-" . strtoupper(str_random(10))   .
                       "-" . setting('site.site_prefix')  .
                       "-" . rand();
 
         session(['order_id' => $orderId]);
-     }
+    }
 
-     /**
-      * Create the Order with unpaid status.
-      *
-      * @return void
-      */
+    /**
+     * Create the Order with unpaid status.
+     *
+     * @return void
+     */
 
-    public function createUnpaidOrder() {
+    public function createUnpaidOrder()
+    {
 
         /* make sure the required data has been set. */
         $this->checkAllowance();
@@ -236,7 +246,7 @@ trait OrderHelper {
         ]);
 
         /* Create Order Details Instane */
-        foreach(Cart::content() as $cart) {
+        foreach (Cart::content() as $cart) {
             OrderDetails::create([
                 'order_id' => $order->id,
                 'item_id' => $cart->model->id,
@@ -263,7 +273,8 @@ trait OrderHelper {
      * @return void
      */
 
-    public function destroyCart() {
+    public function destroyCart()
+    {
         return Cart::destroy();
     }
 }

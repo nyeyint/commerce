@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
-    public function details($id) {
-    	dd($id);
+    public function details($id)
+    {
+        dd($id);
     }
 }

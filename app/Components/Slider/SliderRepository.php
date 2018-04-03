@@ -4,14 +4,14 @@ namespace App\Components\Slider;
 
 use App\Slider;
 
-class SliderRepository {
+class SliderRepository
+{
+    public function getAll()
+    {
+        return Slider::all();
+    }
 
-	public function getAll() {
-		return Slider::all();
-	}
-
-	public function getActive() {
-		
-	}
-
+    public function getActive()
+    {
+    }
 }

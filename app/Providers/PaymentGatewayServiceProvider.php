@@ -21,25 +21,25 @@ class PaymentGatewayServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(!Schema::hasTable('payment_channel')) {
-            \Log::info('Payment Gateway Table not found! Ignoring Provider Boot.');
-        }
-        else
-        {
-            $paymentGateways = DB::table('payment_channel')->get();
-            foreach($paymentGateways as $gateway) {
-                (str_contains($gateway->prefix, ['.']))
-                  ? $this->app->make(PaymentGatewayRegistry::class)
-                      ->registerChannel(explode('.', $gateway->prefix)[0])
-                  : false;
+        // if(!Schema::hasTable('payment_channel')) {
+        //     \Log::info('Payment Gateway Table not found! Ignoring Provider Boot.');
+        // }
+        // else
+        // {
+        //     $paymentGateways = DB::table('payment_channel')->get();
+        //     foreach($paymentGateways as $gateway) {
+        //         (str_contains($gateway->prefix, ['.']))
+        //           ? $this->app->make(PaymentGatewayRegistry::class)
+        //               ->registerChannel(explode('.', $gateway->prefix)[0])
+        //           : false;
 
-                $class = 'App\Components\Payment\PaymentObject\\' . $gateway->namespace;
-                class_exists($class)
-                  ? $this->app->make(PaymentGatewayRegistry::class)
-                      ->register($gateway->prefix, new $class)
-                  : \Log::error('Class ' . $class . ' Missing!');
-            }
-        }
+        //         $class = 'App\Components\Payment\PaymentObject\\' . $gateway->namespace;
+        //         class_exists($class)
+        //           ? $this->app->make(PaymentGatewayRegistry::class)
+        //               ->register($gateway->prefix, new $class)
+        //           : \Log::error('Class ' . $class . ' Missing!');
+        //     }
+        // }
     }
 
     /**

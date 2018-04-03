@@ -41,11 +41,9 @@ class PaymentChannelController extends \App\Http\Controllers\Voyager\VoyagerBrea
             'channel_id' => 'required',
         ]);
 
-        if(substr($request->namespace, 0, 1) == "\\") {
+        if (substr($request->namespace, 0, 1) == "\\") {
             $namespace = "App\Components\Payment\PaymentObject" . $request->namespace;
-        }
-        else
-        {
+        } else {
             $namespace = "App\Components\Payment\PaymentObject\\" . $request->namespace;
         }
 
@@ -66,7 +64,6 @@ class PaymentChannelController extends \App\Http\Controllers\Voyager\VoyagerBrea
                 ":CLASS_NAME:" => $className
             ]);
         } catch (\Exception $e) {
-            
         }
         
 
@@ -134,11 +131,9 @@ class PaymentChannelController extends \App\Http\Controllers\Voyager\VoyagerBrea
             ];
 
         if ($res) {
-            if(substr($request->namespace, 0, 1) == "\\") {
+            if (substr($request->namespace, 0, 1) == "\\") {
                 $namespace = "App\Components\Payment\PaymentObject" . $data->namespace;
-            }
-            else
-            {
+            } else {
                 $namespace = "App\Components\Payment\PaymentObject\\" . $data->namespace;
             }
 
@@ -149,7 +144,7 @@ class PaymentChannelController extends \App\Http\Controllers\Voyager\VoyagerBrea
             $classFile = app_path('Components/Payment/PaymentObject/' . $prefixDir . '/' . $className . '.php');
             
             // remove class.
-            if(file_exists($classFile)) {
+            if (file_exists($classFile)) {
                 unlink($classFile);
             }
             
@@ -159,4 +154,3 @@ class PaymentChannelController extends \App\Http\Controllers\Voyager\VoyagerBrea
         return redirect()->route("voyager.{$dataType->slug}.index")->with($message);
     }
 }
-

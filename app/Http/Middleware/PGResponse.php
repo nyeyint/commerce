@@ -19,7 +19,7 @@ class PGResponse
             'dev', 'staging', 'prod', 'development', 'stag', 'production'
         ];
 
-        if(!in_array($request->status, $allowedStatus)) {
+        if (!in_array($request->status, $allowedStatus)) {
             return abort(404);
         }
 

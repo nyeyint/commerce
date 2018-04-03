@@ -15,11 +15,10 @@ class ajaxMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return $next($request);
         }
 
         return abort(404);
-
     }
 }

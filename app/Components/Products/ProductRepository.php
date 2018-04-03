@@ -6,104 +6,115 @@ use App\Product;
 use App\ProductCategory;
 use Illuminate\Http\Request;
 
-class ProductRepository {
+class ProductRepository
+{
+    protected $category;
 
-	protected $category;
+    protected $product;
 
-	protected $product;
+    public function __construct(ProductCategory $category, Product $product)
+    {
+        $this->category = $category;
+        $this->product = $product;
+    }
 
-	public function __construct(ProductCategory $category, Product $product) {
-		$this->category = $category;
-		$this->product = $product;
-	}
+    public function getAll()
+    {
+        return $this->product->all();
+    }
 
-	public function getAll() {
-		return $this->product->all();
-	}
+    public function getBySlug($slug)
+    {
+        $product = $this->product->where('slug', $slug)->first();
 
-	public function getBySlug($slug) {
-		$product = $this->product->where('slug', $slug)->first();
+        if (!$product) {
+            throw new \Exception("No product with slug {$slug}");
+        }
 
-		if(!$product) {
-			throw new \Exception("No product with slug {$slug}");
-
-		}
-
-		return $product;
-	}
-
-
-	public function getByCategoryId($id, $limit = 20) {
-		$products = $this->product->where('category_id', $id)->limit($limit)->get();
+        return $product;
+    }
 
 
-		return $products;
-	}
-
-	public function getByCategorySlug($slug, $limit = 20) {
-		$category = $this->category->where('slug', $slug)->first();
-		if(!$category) {
-			throw new \Exception(sprintf('Category %s not found!', $category));
-		}
-		$products = $this->product->where('category_id', $category->id)->limit($limit)->get();
+    public function getByCategoryId($id, $limit = 20)
+    {
+        $products = $this->product->where('category_id', $id)->limit($limit)->get();
 
 
-		return $products;
-	}
+        return $products;
+    }
 
-	public function getById($id, $serialize = false) {
-		$product = $this->product->where('id', $id)->first();
+    public function getByCategorySlug($slug, $limit = 20)
+    {
+        $category = $this->category->where('slug', $slug)->first();
+        if (!$category) {
+            throw new \Exception(sprintf('Category %s not found!', $category));
+        }
+        $products = $this->product->where('category_id', $category->id)->limit($limit)->get();
 
-		if(!$product) {
-			throw new \Exception("Product with id {$id} doesn't exists on this repository");
-		}
 
-		return ($serialize)
-				? $product->toJson()
-				: $product;
-	}
+        return $products;
+    }
 
-	public function getProduct($count = 4) {
-		return $this->product->take($count)->get();
-	}
+    public function getById($id, $serialize = false)
+    {
+        $product = $this->product->where('id', $id)->first();
 
-	public function getAllCategory() {
-		return $this->category->all();
-	}
+        if (!$product) {
+            throw new \Exception("Product with id {$id} doesn't exists on this repository");
+        }
 
-	public function getCategoryById($id) {
-		$category = $this->category->where('id', $id)->first();
+        return ($serialize)
+                ? $product->toJson()
+                : $product;
+    }
 
-		if(!$category) {
-			throw new \Exception("Category with id {$id} doesn't exists on this repository");
-		}
+    public function getProduct($count = 4)
+    {
+        return $this->product->take($count)->get();
+    }
 
-		return $category;
-	}
+    public function getAllCategory()
+    {
+        return $this->category->all();
+    }
 
-	public function getCategory($count = 4) {
-		return $this->category->take($count)->get();
-	}
+    public function getCategoryById($id)
+    {
+        $category = $this->category->where('id', $id)->first();
 
-	public function getDiscountProduct($limit = 4) {
-		return $this->product->where('is_discount', true)->take($limit)->get();
-	}
+        if (!$category) {
+            throw new \Exception("Category with id {$id} doesn't exists on this repository");
+        }
 
-	public function search($query, $categoryId = null) {
-		$result = '';
-		if(null != $categoryId) {
-			$category = $this->category->where('slug', $categoryId)->first();
-			if(!$category) {
-				return $this->product->like($query)->get();
-			}
-			$result = $this->product->likeandcat($query, $category->id)->get();
-		}
+        return $category;
+    }
 
-		$result = $this->product->like($query);
-	}
+    public function getCategory($count = 4)
+    {
+        return $this->category->take($count)->get();
+    }
 
-	public function sort(Request $request) {
-		return $this->product->sort($request);
-	}
+    public function getDiscountProduct($limit = 4)
+    {
+        return $this->product->where('is_discount', true)->take($limit)->get();
+    }
 
+    public function search($query, $categoryId = null)
+    {
+        $result = '';
+        if (null != $categoryId) {
+            $category = $this->category->where('slug', $categoryId)->first();
+            if (!$category) {
+                return $this->product->like($query)->get();
+            }
+            $result = $this->product->likeandcat($query, $category->id)->get();
+        }
+
+        $result = $this->product->like($query);
+    }
+
+    public function sort(Request $request)
+    {
+        return $this->product->sort($request);
+    }
 }

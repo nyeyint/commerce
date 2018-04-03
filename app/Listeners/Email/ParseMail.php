@@ -31,7 +31,7 @@ class ParseMail implements ShouldQueue
     {
         $data = $event->data;
 
-        if(!array_key_exists('user', $event->data)) {
+        if (!array_key_exists('user', $event->data)) {
             $data['user'] = $event->user;
         }
 

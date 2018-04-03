@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\Access\AuthorizationException as AccessDeniedHttpException;
 
-
 class Handler extends ExceptionHandler
 {
     /**
@@ -50,8 +49,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-
-        if($e instanceof AccessDeniedHttpException) {
+        if ($e instanceof AccessDeniedHttpException) {
             flash_alert('error', 'Oops! Akses ditolak!');
             return redirect()->back();
         }

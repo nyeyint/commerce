@@ -6,24 +6,24 @@ use App\Product;
 use App\ProductCategory;
 use Illuminate\Http\Request;
 
-class ProductSearch {
-
+class ProductSearch
+{
     protected $product;
 
-    public function apply(Request $request) {
+    public function apply(Request $request)
+    {
         $this->product = new Product();
         $keys = $this->config($request);
-        foreach($keys as $key => $value) {
+        foreach ($keys as $key => $value) {
             // check if $request parameter has a key that have been defined in the config array
-            if($request->has($key)) {
+            if ($request->has($key)) {
                 // check if filter node is an array
                 // if array then use the ['handler']
-                if(is_array($keys[$key]['handler'])) {
-                    if(in_array($request->$key, $keys[$key]['allowed'])) {
-                        if(in_array($keys[$key]['multi'], $keys[$key]) && $keys[$key]['multi'] == true) {
-
+                if (is_array($keys[$key]['handler'])) {
+                    if (in_array($request->$key, $keys[$key]['allowed'])) {
+                        if (in_array($keys[$key]['multi'], $keys[$key]) && $keys[$key]['multi'] == true) {
                             $delimiter = $keys[$key]['delimiter'];
-                            if(str_contains($request->$key, $delimiter)) {
+                            if (str_contains($request->$key, $delimiter)) {
                                 $segments  = explode($delimiter, $request->$key);
                                 array_push($keys[$key]['handler']['params'], ['query' => $segments]);
                                 call_user_func_array(
@@ -31,11 +31,8 @@ class ProductSearch {
                                     $keys[$key]['handler']['params']
                                 );
                             }
-
-                        }
-                        else
-                        {
-                          call_user_func_array(
+                        } else {
+                            call_user_func_array(
                               [$this, $keys[$key]['handler']['method']],
                               $keys[$key]['handler']['params']
                           );
@@ -43,37 +40,28 @@ class ProductSearch {
                     }
 
                     // do nothing if value is not allowed string
-                }
-                else
-                {
-
-                  if(in_array($keys[$key]['multi'], $keys[$key]) && $keys[$key]['multi'] == true) {
-                      $delimiter = $keys[$key]['delimiter'];
-                      if(str_contains($request->$key, $delimiter)) {
-                          $segments  = explode($delimiter, $request->$key);
-                          array_push($keys[$key]['params'], ['query' => $segments]);
-                          call_user_func_array(
+                } else {
+                    if (in_array($keys[$key]['multi'], $keys[$key]) && $keys[$key]['multi'] == true) {
+                        $delimiter = $keys[$key]['delimiter'];
+                        if (str_contains($request->$key, $delimiter)) {
+                            $segments  = explode($delimiter, $request->$key);
+                            array_push($keys[$key]['params'], ['query' => $segments]);
+                            call_user_func_array(
                               [$this, $keys[$key]['handler']],
                               $keys[$key]['params']
                           );
-                      }
-                      else
-                      {
-                        call_user_func_array(
+                        } else {
+                            call_user_func_array(
                             [$this, $keys[$key]['handler']],
                             $keys[$key]['params']
                         );
-                      }
-
-                  }
-                  else
-                  {
-                    call_user_func_array(
+                        }
+                    } else {
+                        call_user_func_array(
                         [$this, $keys[$key]['handler']],
                         $keys[$key]['params']
                     );
-                  }
-
+                    }
                 }
             }
         }
@@ -81,81 +69,82 @@ class ProductSearch {
         return $this->product;
     }
 
-    protected function q(Request $request) {
-        if($request->has('q')) {
+    protected function q(Request $request)
+    {
+        if ($request->has('q')) {
             $this->product = $this->product->like($request->q);
         }
     }
 
-    protected function category(Request $request, $query = []) {
-        if($request->has('category')) {
-            if(count(@$query['query']) > 1) {
+    protected function category(Request $request, $query = [])
+    {
+        if ($request->has('category')) {
+            if (count(@$query['query']) > 1) {
                 $this->product = $this->product->categorySlugWhereIn($query['query']);
+            } else {
+                $category = ProductCategory::where('slug', $request->category)->first();
+                if ($category) {
+                    $this->product = $this->product->category($category->id);
+                }
             }
-            else
-            {
-              $category = ProductCategory::where('slug', $request->category)->first();
-              if($category) {
-                  $this->product = $this->product->category($category->id);
-              }
-            }
-
         }
     }
 
-    protected function sort_by(Request $request, $query) {
-        if($request->has($query)) {
+    protected function sort_by(Request $request, $query)
+    {
+        if ($request->has($query)) {
             $this->product = $this->product->sort($request->$query);
         }
     }
 
-    protected function category_id(Request $request) {
-        if($request->has('category_id')) {
+    protected function category_id(Request $request)
+    {
+        if ($request->has('category_id')) {
             $category = ProductCategory::where('id', $request->category_id)->first();
-            if($category) {
+            if ($category) {
                 $this->product = $this->product->category($category->id);
             }
         }
     }
 
-    protected function min_price(Request $request) {
-        if($request->has('min_price')) {
+    protected function min_price(Request $request)
+    {
+        if ($request->has('min_price')) {
             $min_price = (int) $request->min_price;
 
-            if($request->has('max_price')) {
+            if ($request->has('max_price')) {
                 $max_price = (int) $request->max_price;
-                if($max_price < $min_price) {
+                if ($max_price < $min_price) {
                     // do nothing keep the ecosystem clear
                 }
 
                 $this->product = $this->product->price($min_price, $max_price);
-
             }
 
             $this->product = $this->product = $this->product->price($min_price);
-
         }
     }
 
-    protected function max_price(Request $request) {
-        if($request->has('max_price')) {
+    protected function max_price(Request $request)
+    {
+        if ($request->has('max_price')) {
             $max_price = (int) $request->max_price;
 
-            if($request->has('min_price')) {
+            if ($request->has('min_price')) {
                 $min_price = (int) $request->min_price;
-                if($min_price > $max_price) {
+                if ($min_price > $max_price) {
                     // do nothing keep ecosystem clear
                 }
 
                 $this->product = $this->product->price($min_price, $max_price);
-
             }
 
             $this->product = $this->product->price(null, $max_price);
         }
     }
 
-    protected function config(Request $request) {
+    protected function config(Request $request)
+    {
         return [
             'q' => [
                 'handler' => 'q',
@@ -225,5 +214,4 @@ class ProductSearch {
             ]
         ];
     }
-
 }

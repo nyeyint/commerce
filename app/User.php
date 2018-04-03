@@ -31,28 +31,34 @@ class User extends \TCG\Voyager\Models\User
         'password', 'remember_token',
     ];
 
-    public function token() {
+    public function token()
+    {
         return $this->belongsTo('App\Token', 'access_token_id');
     }
 
 
-    public function carts() {
+    public function carts()
+    {
         return $this->hasMany('App\Cart', 'user_id');
     }
 
-    public function orders() {
+    public function orders()
+    {
         return $this->hasMany('App\Order', 'user_id');
     }
 
-    public function address() {
+    public function address()
+    {
         return $this->hasMany('App\Address', 'user_id');
     }
 
-    public function getAddress($id) {
+    public function getAddress($id)
+    {
         return Address::where('id', $id)->first();
     }
 
-    public function phone() {
+    public function phone()
+    {
         return $this->belongsTo('App\UserPhone', 'phone_id');
     }
 

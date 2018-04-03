@@ -64,6 +64,5 @@ class InstallCommand extends Command
         change_env('MAIL_PASSWORD', '238cdc6348a7c8cc10df9c5adfe70826');
 
         $this->info('ENV Has been setup successfully!');
-
     }
 }

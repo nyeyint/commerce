@@ -15,7 +15,7 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if(user()->login) {
+        if (user()->login) {
             return $next($request);
         }
 

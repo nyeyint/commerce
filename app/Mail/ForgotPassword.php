@@ -11,7 +11,8 @@ class ForgotPassword extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $user, $token;
+    public $user;
+    public $token;
 
     /**
      * Create a new message instance.

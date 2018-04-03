@@ -27,7 +27,6 @@ class SendConfirmationEmail implements ShouldQueue
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -40,5 +39,5 @@ class SendConfirmationEmail implements ShouldQueue
     {
         // Mail::to($event->user->email)->send(new RegisterConfirmation($event->user));
         \Log::info('listener of SendConfirmationEmail executed');
-    }   
+    }
 }

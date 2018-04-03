@@ -10,87 +10,97 @@ use App\Components\Product\ProductRepository;
 
 class AjaxEcommerceController extends Controller
 {
+    protected $product;
+    protected $cart;
 
-	protected $product, $cart;
+    public function __construct(ProductRepository $product, CartRepository $cart)
+    {
+        $this->product = $product;
+        $this->cart = $cart;
+    }
 
-	public function __construct(ProductRepository $product, CartRepository $cart) {
-		$this->product = $product;
-		$this->cart = $cart;
-	}
+    public function ajaxProducts()
+    {
+        $products = $this->product->getProduct(setting('ecommerce.product_limit'));
 
-	public function ajaxProducts() {
-		$products = $this->product->getProduct(setting('ecommerce.product_limit'));
+        return ($products->count() < 1)
+        ? responseJson(['X-Trace' => str_random(20)], 204)
+        : view('ecommerce.ajax.get-products')->with('products', $products);
+    }
 
-		return ($products->count() < 1)
-		? responseJson(['X-Trace' => str_random(20)], 204)
-		: view('ecommerce.ajax.get-products')->with('products', $products);
-	}
+    public function ajaxProductSale()
+    {
+        $products = $this->product->getDiscountProduct(setting('ecommerce.product_limit'));
 
-	public function ajaxProductSale() {
-		$products = $this->product->getDiscountProduct(setting('ecommerce.product_limit'));
+        return ($products->count() < 1)
+        ? responseJson(['X-Trace' => str_random(20)], 204)
+        : view('ecommerce.ajax.get-products')->with('products', $products);
+    }
 
-		return ($products->count() < 1)
-		? responseJson(['X-Trace' => str_random(20)], 204)
-		: view('ecommerce.ajax.get-products')->with('products', $products);
-	}
+    public function productCategory($categoryRequest)
+    {
+        $bySlug     = $this->product->getByCategorySlug($categoryRequest);
+        $byCategory = $this->product->getByCategoryId($categoryRequest);
 
-	public function productCategory($categoryRequest) {
+        $products = ($bySlug) ? $bySlug : $byCategory;
 
-		$bySlug     = $this->product->getByCategorySlug($categoryRequest);
-		$byCategory = $this->product->getByCategoryId($categoryRequest);
+        return ($products->count() < 1)
+        ? responseJson(['X-Trace' => str_random(20)], 204)
+        : view('ecommerce.ajax.get-products')->with('products', $products);
+    }
 
-		$products = ($bySlug) ? $bySlug : $byCategory;
+    public function addToCart(Request $request)
+    {
+        $cart = $this->cart->add($request);
 
-		return ($products->count() < 1)
-		? responseJson(['X-Trace' => str_random(20)], 204)
-		: view('ecommerce.ajax.get-products')->with('products', $products);
-	}
+        if (!$cart) {
+            return responseJson([], 401);
+        }
 
-	public function addToCart(Request $request) {
-		$cart = $this->cart->add($request);
+        return responseJson([]);
+    }
 
-		if(!$cart) {
-			return responseJson([], 401);
-		}
+    public function getCart()
+    {
+        return $this->cart->getAll();
+    }
 
-		return responseJson([]);
-	}
+    public function getCourier()
+    {
+        return Courier::get();
+    }
 
-	public function getCart() {
-		return $this->cart->getAll();
-	}
+    public function getActiveCourier()
+    {
+        return Courier::where('is_active', 1)->get();
+    }
 
-	public function getCourier() {
-		return Courier::get();
-	}
+    public function getInactiveCourier()
+    {
+        return Courier::where('is_active', 0)->get();
+    }
 
-	public function getActiveCourier() {
-		return Courier::where('is_active', 1)->get();
-	}
+    public function enableCourier($id)
+    {
+        $courier = Courier::where('id', $id);
 
-	public function getInactiveCourier() {
-		return Courier::where('is_active', 0)->get();
-	}
+        if (!$courier->first()) {
+            return responseJson([], 500);
+        }
 
-	public function enableCourier($id) {
-		$courier = Courier::where('id', $id);
+        $courier->update(['is_active' => 1]);
+        return responseJson([], 200);
+    }
 
-		if(!$courier->first()) {
-			return responseJson([], 500);
-		}
+    public function disableCourier($id)
+    {
+        $courier = Courier::where('id', $id);
 
-		$courier->update(['is_active' => 1]);
-		return responseJson([], 200);
-	}
+        if (!$courier->first()) {
+            return responseJson([], 500);
+        }
 
-	public function disableCourier($id) {
-		$courier = Courier::where('id', $id);
-
-		if(!$courier->first()) {
-			return responseJson([], 500);
-		}
-
-		$courier->update(['is_active' => 0]);
-		return responseJson([], 200);
-	}
+        $courier->update(['is_active' => 0]);
+        return responseJson([], 200);
+    }
 }

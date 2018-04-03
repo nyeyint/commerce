@@ -97,8 +97,8 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function verify($token) {
-
+    public function verify($token)
+    {
         try {
             $email = decrypt($token);
         } catch (\Exception $e) {
@@ -107,11 +107,11 @@ class RegisterController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        if(!$user) {
+        if (!$user) {
             return abort(404);
         }
 
-        if($user->verified) {
+        if ($user->verified) {
             return redirect('/');
         }
 

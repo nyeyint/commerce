@@ -34,20 +34,18 @@ class DynamicEmail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        if(null == $this->attachment) {
+        if (null == $this->attachment) {
             return $this->from(setting('ecommerce.email_address'))
                       ->markdown('emails.dynamic-email')
                       ->subject($this->subject);
         }
 
-        if(is_array($this->attachment)) {
+        if (is_array($this->attachment)) {
             return $this->multipleAttachment($this->attachment)
                       ->from(setting('ecommerce.email_address'))
                       ->markdown('emails.dynamic-email')
                       ->subject($this->subject);
-        }
-        else
-        {
+        } else {
             return $this->attach($this->attachment)
                       ->from(setting('ecommerce.email_address'))
                       ->markdown('emails.dynamic-email')
@@ -61,8 +59,9 @@ class DynamicEmail extends Mailable implements ShouldQueue
      * @return $this
      */
 
-    protected function multipleAttachment(array $files = []) {
-        foreach($files as $key => $path) {
+    protected function multipleAttachment(array $files = [])
+    {
+        foreach ($files as $key => $path) {
             $this->attach($path);
         }
 

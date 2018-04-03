@@ -9,7 +9,6 @@ class Subscriber extends Model
     protected $table = 'newsletter_email';
 
     protected $fillable = [
-    	'first_name', 'last_name', 'email', 'confirmed'
+        'first_name', 'last_name', 'email', 'confirmed'
     ];
-
 }

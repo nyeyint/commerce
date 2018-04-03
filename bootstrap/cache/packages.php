@@ -1,4 +1,27 @@
 <?php return array (
+  'arrilot/laravel-widgets' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Arrilot\\Widgets\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Widget' => 'Arrilot\\Widgets\\Facade',
+      'AsyncWidget' => 'Arrilot\\Widgets\\AsyncFacade',
+    ),
+  ),
+  'barryvdh/laravel-debugbar' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Debugbar' => 'Barryvdh\\Debugbar\\Facade',
+    ),
+  ),
   'barryvdh/laravel-dompdf' => 
   array (
     'providers' => 
@@ -28,6 +51,24 @@
       'Cart' => 'Gloudemans\\Shoppingcart\\Facades\\Cart',
     ),
   ),
+  'intervention/image' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Intervention\\Image\\ImageServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Image' => 'Intervention\\Image\\Facades\\Image',
+    ),
+  ),
+  'larapack/voyager-hooks' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Larapack\\VoyagerHooks\\VoyagerHooksServiceProvider',
+    ),
+  ),
   'laravel/socialite' => 
   array (
     'providers' => 
@@ -46,34 +87,11 @@
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
     ),
   ),
-  'larapack/voyager-hooks' => 
+  'orangehill/iseed' => 
   array (
     'providers' => 
     array (
-      0 => 'Larapack\\VoyagerHooks\\VoyagerHooksServiceProvider',
-    ),
-  ),
-  'intervention/image' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-  ),
-  'arrilot/laravel-widgets' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Arrilot\\Widgets\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Widget' => 'Arrilot\\Widgets\\Facade',
-      'AsyncWidget' => 'Arrilot\\Widgets\\AsyncFacade',
+      0 => 'Orangehill\\Iseed\\IseedServiceProvider',
     ),
   ),
   'tcg/voyager' => 
@@ -92,24 +110,6 @@
     'aliases' => 
     array (
       'Uuid' => 'Webpatser\\Uuid\\Uuid',
-    ),
-  ),
-  'barryvdh/laravel-debugbar' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facade',
-    ),
-  ),
-  'orangehill/iseed' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Orangehill\\Iseed\\IseedServiceProvider',
     ),
   ),
   'xethron/migrations-generator' => 

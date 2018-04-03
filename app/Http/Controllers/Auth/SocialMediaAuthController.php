@@ -8,6 +8,5 @@ use App\Components\Auth\SocialAuthMechanism;
 
 class SocialMediaAuthController extends Controller
 {
-
-	use SocialAuthMechanism;
+    use SocialAuthMechanism;
 }

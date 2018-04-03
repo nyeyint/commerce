@@ -26,12 +26,11 @@ class IndonesianPhone implements Rule
     public function passes($attribute, $value)
     {
         $regex = "/(\()?(\+62|62|0)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}/";
-        if(preg_match($regex, $value)) {
+        if (preg_match($regex, $value)) {
             return true;
         }
 
         return false;
-
     }
 
     /**

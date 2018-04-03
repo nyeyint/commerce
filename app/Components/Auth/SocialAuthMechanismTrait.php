@@ -5,15 +5,15 @@ namespace App\Components\Auth;
 use App\Components\Auth\RegisterFromSocial;
 use Laravel\Socialite\Facades\Socialite;
 
-trait SocialAuthMechanism {
-
+trait SocialAuthMechanism
+{
     use RegisterFromSocial;
 
-	/**
-	 * Define allowed provider.
-	 *
-	 * @var String
-	 */
+    /**
+     * Define allowed provider.
+     *
+     * @var String
+     */
 
     protected $allowedProvider = ['facebook', 'twitter'];
 
@@ -26,11 +26,9 @@ trait SocialAuthMechanism {
 
     public function redirectToProvider($provider)
     {
-
-    	return (in_array($provider, $this->allowedProvider)) 
-    		? Socialite::driver($provider)->redirect()
-    		: abort(404);
-
+        return (in_array($provider, $this->allowedProvider))
+            ? Socialite::driver($provider)->redirect()
+            : abort(404);
     }
 
     /**
@@ -39,11 +37,11 @@ trait SocialAuthMechanism {
      * @return Illuminate\Http\Response
      */
 
-    public function handleProviderCallback($provider) {
-    	
-    	return (in_array($provider, $this->allowedProvider))
-    		? $this->$provider(Socialite::driver($provider))
-    		: abort(404);
+    public function handleProviderCallback($provider)
+    {
+        return (in_array($provider, $this->allowedProvider))
+            ? call_user_func([$this, $provider], Socialite::driver($provider))
+            : abort(404);
     }
 
     /**
@@ -52,8 +50,8 @@ trait SocialAuthMechanism {
      * @return Illuminate\Http\Response
      */
 
-    protected function facebook($providerCallback) {
-
+    protected function facebook($providerCallback)
+    {
         try {
             $user = $providerCallback->user();
         } catch (\Exception $e) {
@@ -81,8 +79,8 @@ trait SocialAuthMechanism {
      * @return Illuminate\Http\Response
      */
 
-    public function twitter($providerCallback) {
-        
+    public function twitter($providerCallback)
+    {
         try {
             $user = $providerCallback->user();
         } catch (\Exception $e) {
@@ -104,5 +102,4 @@ trait SocialAuthMechanism {
 
         return $this->register($config);
     }
-
 }

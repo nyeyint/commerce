@@ -12,8 +12,8 @@ use App\Events\Email\SentMail;
 use App\Exceptions\OrderNotFoundException;
 use App\Exceptions\InvalidOrderStatusException;
 
-
-class OrderFactory {
+class OrderFactory
+{
 
   /**
    * Order Status Paid.
@@ -21,122 +21,124 @@ class OrderFactory {
    * @return string
    */
 
-  const ORDER_STATUS_PAID = 'paid';
+    const ORDER_STATUS_PAID = 'paid';
 
-  /**
-   * Order Status Unpaid.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Unpaid.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_UNPAID = 'unpaid';
+    const ORDER_STATUS_UNPAID = 'unpaid';
 
-  /**
-   * Order Status Shipped.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Shipped.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_SHIPPED = 'shipped';
+    const ORDER_STATUS_SHIPPED = 'shipped';
 
-  /**
-   * Order Status Unknown.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Unknown.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_UNKNOWN = 'unknown';
+    const ORDER_STATUS_UNKNOWN = 'unknown';
 
-  /**
-   * Order Status Waiting Confirmation.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Waiting Confirmation.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_WAITING_CONFIRMATION = 'waiting confirmation';
+    const ORDER_STATUS_WAITING_CONFIRMATION = 'waiting confirmation';
 
-  /**
-   * Order Status Waiting Shipment.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Waiting Shipment.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_WAITING_SHIPMENT = 'waiting shipment';
+    const ORDER_STATUS_WAITING_SHIPMENT = 'waiting shipment';
 
-  /**
-   * Order Status Proccessing Payment.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Proccessing Payment.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_PROCCESSING_PAYMENT = 'proccessing payment';
+    const ORDER_STATUS_PROCCESSING_PAYMENT = 'proccessing payment';
 
-   /**
-   * Order Status Waiting Payment.
-   *
-   * @return string
-   */
+    /**
+    * Order Status Waiting Payment.
+    *
+    * @return string
+    */
 
-  const ORDER_STATUS_WAITING_PAYMENT = 'waiting payment';
+    const ORDER_STATUS_WAITING_PAYMENT = 'waiting payment';
 
-  /**
-   * Order Status Payment Confirmed.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Payment Confirmed.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_PAYMENT_CONFIRMED = 'payment confirmed';
+    const ORDER_STATUS_PAYMENT_CONFIRMED = 'payment confirmed';
 
-  /**
-   * Order Status Payment Declined.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Payment Declined.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_PAYMENT_DECLINED = 'payment declined';
+    const ORDER_STATUS_PAYMENT_DECLINED = 'payment declined';
 
-  /**
-   * Order Status Canceled.
-   *
-   * @return string
-   */
+    /**
+     * Order Status Canceled.
+     *
+     * @return string
+     */
 
-  const ORDER_STATUS_PAYMENT_CANCELED = 'canceled';
+    const ORDER_STATUS_PAYMENT_CANCELED = 'canceled';
 
-  use OrderHelper;
+    use OrderHelper;
 
-  public function __construct() {
-      event('orderfactory.booted');
-  }
+    public function __construct()
+    {
+        event('orderfactory.booted');
+    }
 
-  public function success() {
-      event('payment.paid');
+    public function success()
+    {
+        event('payment.paid');
 
-      if(!session()->has('current_order')) {
-          return abort(404);
-      }
+        if (!session()->has('current_order')) {
+            return abort(404);
+        }
 
-      $order = session('current_order');
-      $this->updateStatus($order->order_id, self::ORDER_STATUS_PAYMENT_CONFIRMED);
+        $order = session('current_order');
+        $this->updateStatus($order->order_id, self::ORDER_STATUS_PAYMENT_CONFIRMED);
 
-      return redirect()->route('payment.view.success', encrypt(str_random(18)));
+        return redirect()->route('payment.view.success', encrypt(str_random(18)));
+    }
 
-  }
+    public function proccess()
+    {
+        event('payment.proccess');
 
-  public function proccess() {
-      event('payment.proccess');
+        $this->updateStatus(session('order_id'), self::ORDER_STATUS_PROCCESSING_PAYMENT);
 
-      $this->updateStatus(session('order_id'), self::ORDER_STATUS_PROCCESSING_PAYMENT);
+        return redirect()->route('payment.view.proccessing', encrypt(str_random(18)));
+    }
 
-      return redirect()->route('payment.view.proccessing', encrypt(str_random(18)));
-  }
+    public function failed()
+    {
+    }
 
-  public function failed() {
-
-  }
-
-  public function __destruct() {
-      event('orderfactory.destroyed');
-  }
-
+    public function __destruct()
+    {
+        event('orderfactory.destroyed');
+    }
 }

@@ -16,9 +16,9 @@ class StateMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(null == $request->_encrypted_state || null == $request->_plain_state) {
+        if (null == $request->_encrypted_state || null == $request->_plain_state) {
             throw new StateMismatchException("Error Processing Request");
-        }  
+        }
 
         return $next($request);
     }

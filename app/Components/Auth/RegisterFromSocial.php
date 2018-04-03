@@ -7,61 +7,58 @@ use App\Token;
 use Illuminate\Support\Facades\Auth;
 use App\Events\SocialMediaRegistered;
 
-trait RegisterFromSocial {
+trait RegisterFromSocial
+{
 
-	/**
-	 * The wrapper for confug array
-	 *
-	 * @var array
-	 */
+    /**
+     * The wrapper for confug array
+     *
+     * @var array
+     */
 
-	protected $config;
+    protected $config;
 
-	/**
-	 * The wrapper for user object.
-	 *
-	 * @var User Object
-	 */
+    /**
+     * The wrapper for user object.
+     *
+     * @var User Object
+     */
 
-	protected $user;
+    protected $user;
 
-	public function register(array $config) {
+    public function register(array $config)
+    {
+        $this->config = $config;
 
-		$this->config = $config;
+        if ($this->userExists()) {
+            Auth::loginUsingId($this->user->id);
 
-		if($this->userExists()) {
-			Auth::loginUsingId($this->user->id);
+            return redirect('/home');
+        }
 
-			return redirect('/home');
-		}
+        $user = User::create([
+            'name' => $config['user']['name'],
+            'email' => $config['user']['email'],
+            'password' => $config['user']['password']
+        ]);
 
-		$user = User::create([
-			'name' => $config['user']['name'],
-			'email' => $config['user']['email'],
-			'password' => $config['user']['password']
-		]);
+        $config['token']['user_id'] = $user->id;
 
-		$config['token']['user_id'] = $user->id;
+        $token = Token::create($config['token']);
 
-		$token = Token::create($config['token']);
+        User::where('id', $user->id)->update(['access_token_id' => $token->id]);
 
-		User::where('id', $user->id)->update(['access_token_id' => $token->id]);
+        event(new SocialMediaRegistered($user));
 
-		event(new SocialMediaRegistered($user));
+        Auth::loginUsingId($user->id);
 
-		Auth::loginUsingId($user->id);
+        return redirect('/home');
+    }
 
-		return redirect('/home');
-	}
+    public function userExists()
+    {
+        $user = User::where('email', $this->config['user']['email'])->first();
 
-	public function userExists() {
-		$user = User::where('email', $this->config['user']['email'])->first();
-
-		return ($user)
-			? $this->user = $user
-			: false;
-	}
-
-
-
+        return ($user) ? $this->user = $user : false;
+    }
 }

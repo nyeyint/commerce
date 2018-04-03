@@ -11,7 +11,8 @@ class RegisterConfirmation extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $url, $user;
+    public $url;
+    public $user;
 
     /**
      * Create a new message instance.

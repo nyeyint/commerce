@@ -59,11 +59,8 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if($request->_next) {
+        if ($request->_next) {
             $this->redirectTo = $request->_next;
         }
     }
-
-    
-
 }

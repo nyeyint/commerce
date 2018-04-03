@@ -7,7 +7,8 @@ use Ongkir;
 
 class OngkirController extends Controller
 {
-    public function calculate(Request $request) {
-    	return Ongkir::calculate($request->all());
+    public function calculate(Request $request)
+    {
+        return Ongkir::calculate($request->all());
     }
 }

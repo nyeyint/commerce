@@ -2,22 +2,21 @@
 
 namespace App\Components\Cart;
 
-class CartItem {
+class CartItem
+{
+    public function __construct()
+    {
+    }
 
-	public function __construct() {
-		
-	}
+    public function getPrice()
+    {
+    }
 
-	public function getPrice() {
+    public function getQuantity()
+    {
+    }
 
-	}
-
-	public function getQuantity() {
-
-	}
-
-	public function getItem() {
-
-	}
-
+    public function getItem()
+    {
+    }
 }

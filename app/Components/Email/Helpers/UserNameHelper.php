@@ -2,61 +2,62 @@
 
 namespace App\Components\Email\Helpers;
 
-class UserNameHelper {
+class UserNameHelper
+{
 
-	/**
-	 * The helper key
-	 *
-	 * @return string
-	 */
-	public $helper;
+    /**
+     * The helper key
+     *
+     * @return string
+     */
+    public $helper;
 
-	/**
-	 * Email template Object
-	 *
-	 * @return string
-	 */
-	public $template;
+    /**
+     * Email template Object
+     *
+     * @return string
+     */
+    public $template;
 
-	/**
-	 * The data object
-	 *
-	 * @return array
-	 */
-	public $data;
+    /**
+     * The data object
+     *
+     * @return array
+     */
+    public $data;
 
-	/**
-	 * The parsed template
-	 *
-	 * @return string
-	 */
-	public $parsed;
+    /**
+     * The parsed template
+     *
+     * @return string
+     */
+    public $parsed;
 
-	public function __construct($helper, $template, $data) {
-		$this->helper = $helper;
-		$this->template = $template;
-		$this->data = $data;
+    public function __construct($helper, $template, $data)
+    {
+        $this->helper = $helper;
+        $this->template = $template;
+        $this->data = $data;
 
-		return $this->parse();
-	}
+        return $this->parse();
+    }
 
-	protected function parse() {
-		$string = $this->template;
+    protected function parse()
+    {
+        $string = $this->template;
 
-		if($this->data['user'] != null) {
-			$this->parsed = str_replace($this->helper, $this->data['user']->name, $string);
-		}
-		else
-		{
-			$this->parsed = str_replace($this->helper, '', $string);
-			\Log::info('user not logged in (UserNameHelper)');
-		}
+        if ($this->data['user'] != null) {
+            $this->parsed = str_replace($this->helper, $this->data['user']->name, $string);
+        } else {
+            $this->parsed = str_replace($this->helper, '', $string);
+            \Log::info('user not logged in (UserNameHelper)');
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function result() {
-		return $this->parsed;
-	}
-
+    public function result()
+    {
+        return $this->parsed;
+    }
 }
